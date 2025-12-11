@@ -17,3 +17,5 @@ plugins/
 
 # Ignorar arquivos do sistema
 .DS_Store
+
+docker-compose.yaml
