@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  # --- Banco de Dados (PostgreSQL) ---
+  postgres:
+    image: postgres:13
+    container_name: orquestrador_postgres
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+
+  # --- Airflow (Orquestrador) ---
+  airflow:
+    build: .
+    container_name: orquestrador_airflow
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      # Conexão com o Banco
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      # Usuário Admin Padrão
+      - AIRFLOW__WEBSERVER__DEFAULT_UI_USER=admin
+      - AIRFLOW__WEBSERVER__DEFAULT_UI_PASSWORD=admin
+      # Correção de Proxy (para evitar erro de CSRF)
+      - AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX=True
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./data:/opt/airflow/data
+      # Mapeamento do Projeto Node.js
+      - D:/Projetos/Observatorio:/opt/node_project
+    ports:
+      - "8080:8080"
+    # Comando de Inicialização
+    command: >
+      bash -c "airflow db migrate &&
+      airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin || true &&
+      airflow scheduler & airflow webserver"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

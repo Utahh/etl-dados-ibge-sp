@@ -1,0 +1,19 @@
+# Ignorar ambiente virtual Python
+.venv/
+venv/
+__pycache__/
+
+# Ignorar dependências do Node (se tiver pasta node dentro)
+node_modules/
+
+# Ignorar arquivos de dados gerados (para não pesar o repo)
+data/*.csv
+analytics/*.csv
+output/*.json
+
+# Ignorar logs do Airflow (são muitos e inúteis no git)
+logs/
+plugins/
+
+# Ignorar arquivos do sistema
+.DS_Store

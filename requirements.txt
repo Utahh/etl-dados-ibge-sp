@@ -1,0 +1,5 @@
+apache-airflow
+polars
+pandas
+psycopg2-binary
+sqlalchemy
