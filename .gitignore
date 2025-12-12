@@ -1,21 +1,10 @@
-# Ignorar ambiente virtual Python
-.venv/
-venv/
-__pycache__/
-
-# Ignorar dependências do Node (se tiver pasta node dentro)
-node_modules/
-
-# Ignorar arquivos de dados gerados (para não pesar o repo)
-data/*.csv
-analytics/*.csv
-output/*.json
-
-# Ignorar logs do Airflow (são muitos e inúteis no git)
+.venv
+venv
+__pycache__
+.env
 logs/
 plugins/
-
-# Ignorar arquivos do sistema
-.DS_Store
-
-docker-compose.yaml
+data/           # Ignora os CSVs e o DB do Postgres mapeado
+analytics/      # Ignora os CSVs de entrada
+postgres-db-volume/
+*.pyc
